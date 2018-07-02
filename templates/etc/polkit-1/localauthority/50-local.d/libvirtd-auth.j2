@@ -1,0 +1,6 @@
+[Allow group {{ _libvirt_auth.group }} management permissions]
+Identity=unix-group:{{ _libvirt_auth.group }}
+Action=org.libvirt.unix.manage
+ResultAny=yes
+ResultInactive=yes
+ResultActive=yes
