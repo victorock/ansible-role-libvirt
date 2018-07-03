@@ -1,0 +1,66 @@
+---
+- name: "Ensure state of _libvirt_repos"
+  become: true
+  yum_repository:
+    name: "{{ _libvirt_repo.name }}"
+    baseurl: "{{ _libvirt_repo.baseurl }}"
+    description: "{{ _libvirt_repo.description | default(omit) }}"
+    gpgcheck: "{{ _libvirt_repo.gpgcheck | default(omit) }}"
+    enabled: "{{ _libvirt_repo.enabled | default(omit) }}"
+    repo_gpgcheck: "{{ _libvirt_repo.repo_gpgcheck | default(omit) }}"
+    gpgkey: "{{ _libvirt_repo.gpgkey | default(omit) }}"
+  loop: "{{ _libvirt_repos }}"
+  loop_control:
+    loop_var: _libvirt_repo
+
+- name: "Ensure state of _libvirt_packages"
+  become: true
+  yum:
+    name: "{{ _libvirt_package.name | default(_libvirt_package) }}"
+    state: "{{ _libvirt_package.state | default(omit) }}"
+    update_cache: "{{ _libvirt_package.update_cache | default(omit) }}"
+  loop: "{{ _libvirt_packages }}"
+  loop_control:
+    loop_var: _libvirt_package
+
+- name: "Ensure state of _libvirt_uefi"
+  become: true
+  copy:
+    src: "{{ _libvirt_uefi.src }}"
+    dest: "{{ _libvirt_uefi.dest }}"
+    force: yes
+    remote_src: yes
+    selevel: "s0"
+    serole: "object_r"
+    setype: "usr_t"
+    seuser: "system_u"
+    owner: "root"
+    group: "root"
+
+- name: "Ensure state of _libvirt_service"
+  become: true
+  service:
+    name: "{{ _libvirt_service.name }}"
+    state: "{{ _libvirt_service.state }}"
+    enabled: "{{ _libvirt_service.enabled }}"
+
+- name: " Ensure state of group for _libvirt_auth"
+  become: true
+  group:
+    name: "{{ _libvirt_auth.group }}"
+    state: present
+    system: yes
+
+- name: "Ensure state of polkit for _libvirt_auth"
+  become: true
+  template:
+    src: "{{ _libvirt_auth.src }}"
+    dest: "{{ _libvirt_auth.dest }}"
+    mode: 0600
+    selevel: "s0"
+    serole: "object_r"
+    setype: "etc_t"
+    seuser: "system_u"
+    owner: "root"
+    group: "root"
+  notify: _libvirtd_service_restart

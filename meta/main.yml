@@ -1,0 +1,16 @@
+---
+dependencies: []
+
+galaxy_info:
+  author: Victor da Costa (@victorock)
+  description: "Ansible role to install libvirt."
+  company: victorock
+  license: GPLv3
+  min_ansible_version: 2.6
+  platforms:
+    - name: EL
+      versions:
+        - 7
+  galaxy_tags:
+    - system
+    - libvirt
