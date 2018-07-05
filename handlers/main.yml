@@ -1,4 +1,19 @@
-- name: _libvirtd_service_restart
+- name: _libvirt_service_libvirtd_restart
   service:
-    name: "{{ _libvirt_service.name }}"
+    name: "{{ _libvirt_service_libvirtd.name }}"
+    state: restarted
+
+- name: _libvirt_service_numad_restart
+  service:
+    name: "{{ _libvirt_service_numad.name }}"
+    state: restarted
+
+- name: _libvirt_service_ksm_restart
+  service:
+    name: "{{ _libvirt_service_ksm.name }}"
+    state: restarted
+
+- name: _libvirt_service_ksmtuned_restart
+  service:
+    name: "{{ _libvirt_service_ksmtuned.name }}"
     state: restarted

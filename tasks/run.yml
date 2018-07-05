@@ -37,12 +37,15 @@
     owner: "root"
     group: "root"
 
-- name: "Ensure state of _libvirt_service"
+- name: "Ensure state of _libvirt_services"
   become: true
   service:
-    name: "{{ _libvirt_service.name }}"
-    state: "{{ _libvirt_service.state }}"
-    enabled: "{{ _libvirt_service.enabled }}"
+    name: "{{ _libvirt_service.name | default(_libvirt_service) }}"
+    state: "{{ _libvirt_service.state | default(omit) }}"
+    enabled: "{{ _libvirt_service.enabled | default(omit) }}"
+  loop: "{{ _libvirt_services }}"
+  loop_control:
+    loop_var: _libvirt_service
 
 - name: " Ensure state of group for _libvirt_auth"
   become: true
@@ -63,4 +66,4 @@
     seuser: "system_u"
     owner: "root"
     group: "root"
-  notify: _libvirtd_service_restart
+  notify: _libvirt_service_libvirtd_restart

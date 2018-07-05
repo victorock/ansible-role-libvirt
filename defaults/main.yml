@@ -1,2 +1,4 @@
 ---
 libvirt_auth_group: "libvirt"
+libvirt_services_state: "started"
+libvirt_services_enabled: "yes"

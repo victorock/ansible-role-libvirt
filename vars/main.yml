@@ -6,17 +6,78 @@ _libvirt_repos:
     enabled: yes
     repo_gpgcheck: no
 
-  - name: virt
-    description: "centos virt repo"
+  - name: kvm-common
+    description: "centos kvm-common"
+    baseurl: "http://mirror.centos.org/centos/{{ ansible_distribution_major_version }}/virt/x86_64/kvm-common/"
+    gpgcheck: no
+    enabled: yes
+    repo_gpgcheck: no
+
+  - name: libvirt-latest
+    description: "centos libvirt-latest"
     baseurl: "http://mirror.centos.org/centos/{{ ansible_distribution_major_version }}/virt/x86_64/libvirt-latest/"
     gpgcheck: no
     enabled: yes
     repo_gpgcheck: no
 
-_libvirt_service:
-  state: started
+  - name: elrepo
+    description: ELRepo.org Community Enterprise Linux Repository - el{{ ansible_distribution_major_version }}
+    baseurl: http://elrepo.org/linux/elrepo/el{{ ansible_distribution_major_version }}/$basearch/
+    mirrorlist: http://mirrors.elrepo.org/mirrors-elrepo.el{{ ansible_distribution_major_version }}
+    enabled: 1
+    gpgcheck: 1
+    gpgkey: https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+
+  - name: elrepo-testing
+    description: ELRepo.org Community Enterprise Linux Testing Repository - el{{ ansible_distribution_major_version }}
+    baseurl: http://elrepo.org/linux/testing/el{{ ansible_distribution_major_version }}/$basearch/
+    mirrorlist: http://mirrors.elrepo.org/mirrors-elrepo-testing.el{{ ansible_distribution_major_version }}
+    enabled: 1
+    gpgcheck: 1
+    gpgkey: https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+
+  - name: elrepo-kernel
+    description: ELRepo.org Community Enterprise Linux Kernel Repository - el{{ ansible_distribution_major_version }}
+    baseurl: http://elrepo.org/linux/kernel/el{{ ansible_distribution_major_version }}/$basearch/
+    mirrorlist: http://mirrors.elrepo.org/mirrors-elrepo-kernel.el{{ ansible_distribution_major_version }}
+    enabled: 1
+    gpgcheck: 1
+    gpgkey: https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+
+  - name: elrepo-extras
+    description: ELRepo.org Community Enterprise Linux Extras Repository - el{{ ansible_distribution_major_version }}
+    baseurl: http://elrepo.org/linux/extras/el{{ ansible_distribution_major_version }}/$basearch/
+    mirrorlist: http://mirrors.elrepo.org/mirrors-elrepo-kernel.el{{ ansible_distribution_major_version }}
+    enabled: 1
+    gpgcheck: 1
+    gpgkey: https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+
+_libvirt_services:
+  - "{{ _libvirt_service_libvirtd }}"
+  - "{{ _libvirt_service_numad }}"
+  - "{{ _libvirt_service_ksm }}"
+  - "{{ _libvirt_service_ksmtuned }}"
+
+_libvirt_service_libvirtd:
   name: libvirtd
-  enabled: yes
+  state: "{{ libvirt_services_state }}"
+  enabled: "{{ libvirt_services_enabled }}"
+
+_libvirt_service_numad:
+  name: numad
+  state: "{{ libvirt_services_state }}"
+  enabled: "{{ libvirt_services_enabled }}"
+
+_libvirt_service_ksm:
+  name: ksm
+  state: "{{ libvirt_services_state }}"
+  enabled: "{{ libvirt_services_enabled }}"
+
+_libvirt_service_ksmtuned:
+  name: ksmtuned
+  state: "{{ libvirt_services_state }}"
+  enabled: "{{ libvirt_services_enabled }}"
+
 
 _libvirt_uefi:
   src: "/usr/share/edk2.git/ovmf-x64/OVMF_CODE-pure-efi.fd"
@@ -29,10 +90,10 @@ _libvirt_auth:
 
 _libvirt_packages:
   - name:
-      - qemu
-      - qemu-kvm
-      - qemu-img
-      - qemu-kvm-tools
+      - qemu-kvm-ev
+      - qemu-img-ev
+      - qemu-kvm-tools-ev
+      - qemu-kvm-common-ev
       - virt-top
       - virt-install
       - virt-manager
@@ -42,5 +103,7 @@ _libvirt_packages:
       - libvirt-client
       - OVMF
       - edk2.git-ovmf-x64
+      - numactl
+      - numad
     update_cache: yes
     state: latest

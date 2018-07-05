@@ -1,14 +1,6 @@
 ---
-- hosts: test
-  gather_facts: yes
+- hosts: all
 
   roles:
-    - role: test
+    - role: role_under_test
       autorun: true
-
-  tasks:
-
-    - name: test
-      include_role:
-        name: test
-        tasks_from: run

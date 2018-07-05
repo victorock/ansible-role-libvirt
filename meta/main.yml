@@ -2,6 +2,7 @@
 dependencies: []
 
 galaxy_info:
+  ansible_role: libvirt
   author: Victor da Costa (@victorock)
   description: "Ansible role to install libvirt."
   company: victorock
@@ -14,3 +15,6 @@ galaxy_info:
   galaxy_tags:
     - system
     - libvirt
+    - qemu
+    - ksm
+    - numa
